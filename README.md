@@ -1,82 +1,107 @@
-# SayanrupBarman.github.io
+# Data Analytics Portfolio
 
-
-# 👋 Hello there, I'm Sayanrup Barman
-
-🎓 **Electronics and Instrumentation Engineering Undergraduate** at NIT Silchar (Batch of 2026)  
-📍 Assam, India  
-📫 [sayanrupb_ug_22@eie.nits.ac.in](mailto:sayanrupb_ug_22@eie.nits.ac.in)
-
----
-
-## 🔍 About Me
-
-I'm an aspiring engineer with a passion for building solutions that intersect **technology and real-world impact**. From image colorization with deep learning to biomedical imaging using holography, I love exploring diverse domains through **self-driven projects** and **research internships**.
-
-When I'm not coding or analyzing data, you'll find me organizing events, moderating communities, or simply jamming with my guitar 🎸.
+<p align="left">
+  <a href="mailto:sayanrupb_ug_22@ei.nits.ac.in">
+    <img src="https://img.shields.io/badge/Email-D14836?style=for-the-badge&logo=gmail&logoColor=white" alt="Email">
+  <a href="https://github.com/SayanrupBarman">
+    <img src="https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white" alt="GitHub">
+  </a>
+</p>
 
 ---
 
-## 🧪 Projects
+## About Me
 
-### 🎨 Image and Video Colorization
-- Created a deep learning model to bring grayscale images to life.
-- Extended to video using frame-wise processing in OpenCV.
-- Built with: **Python**, **OpenCV**, **TensorFlow**
-
-### 📊 Data Analysis Portfolio
-- Built a complete pipeline from data acquisition to visualization.
-- Cleaned and analyzed data using **SQL**, **Excel**, and visualized with **Power BI**.
-
-### 🔬 Fringe Pattern Interferometry & 3D Cell Imaging
-- Designed a **PyQt-based GUI** to analyze fringe patterns for precise phase extraction.
-- Contributed to holographic cell counting with adaptive space-time reconstruction.
+A data-driven and curious engineering student from NIT Silchar with a passion for solving real-world business problems.  
+My core expertise lies in building end-to-end data analysis pipelines using Python, SQL, and modern BI tools to transform raw data into actionable insights.  
+I also leverage machine learning techniques to enhance predictive capabilities and deliver more robust solutions.  
+I am eager to apply my skills in a fast-paced, impact-oriented environment and contribute to data-informed decision-making.
 
 ---
 
-## 🔧 Skills
+### Technical Skills
 
-- **Languages & Tools:** Python, C, MATLAB, SQL, Excel, Power BI, PyQt
-- **Soft Skills:** Leadership, Team Collaboration, Event Management, Critical Thinking
-- **Prompt Engineering:** Adept in using AI tools like Copilot, Claude, n8n, etc.
-
----
-
-## 💼 Experience
-
-### 🧑‍🔬 Research Intern — IIT Guwahati (June–July 2025)
-- Worked on **Interferometry**, **Holographic Flow Cytometry**, and **3D Cell Imaging**.
+| Category | Skills |
+| :--- | :--- |
+| **Languages** | Python, SQL, C, MATLAB |
+| **Data Analysis & ML** | Pandas, NumPy, Scikit-learn, TensorFlow, ETL Pipelines, Data Modeling (Star Schema) |
+| **Databases** | PostgreSQL, SQL Server |
+| **BI & Visualization** | Power BI, Matplotlib, Seaborn |
+| **Developer Tools** | Git, GitHub, Jupyter Notebook |
+| **Prompt Engineering** | AI-driven problem-solving leveraging tools like Copilot and Claude |
 
 ---
 
-## 👥 Positions of Responsibility
+## Projects Showcase
 
-- **Treasurer, INSEES NIT Silchar**  
-  Budgeting, sponsorship, and PR for academic and student initiatives.
-
-- **Lead Moderator, BACE**  
-  Managed online community engagement and content flow.
-
-- **Lit Head & Moderator, Illuminits & Symphonits**  
-  Coordinated events and led content teams across major college fests.
+Here are some of the projects I've worked on. They demonstrate my ability to handle data from extraction and cleaning to analysis and visualization.
 
 ---
 
-## 🌱 Beyond Academics
+### 1. Optimizing Marketing Strategy through Customer Segmentation
 
-- **Eco Club Volunteer** 🌿
-- **Event Coordinator** at Incandescence, Tecnoesis, Posua
-- Passionate about **art**, **music**, and **spiritual growth**
+<p align="center">
+  <img src="assets/images/customer_dashboard.png" width="700" alt="Customer Analysis Dashboard">
+</p>
+
+*   **Description:** An end-to-end analysis of an e-commerce dataset to segment customers, identify purchasing patterns, and provide data-driven marketing recommendations.
+*   **Technologies:** Python (Pandas), PostgreSQL, SQL, Power BI
+*   **Links:** **[GitHub Repository](https://github.com/SayanrupBarman/customer-behavior-analysis)**
+
+#### Business Problem
+An e-commerce business needed to move beyond generic marketing and understand its customer base to drive growth. The key challenge was to extract actionable insights from raw shopping data to identify high-value segments and purchasing patterns.
+
+#### Impact (Result)
+The analysis highlighted that male customers generate over double the revenue of female customers, and that spending habits between subscribed and non-subscribed users are nearly identical. This allows the business to refocus marketing on high-revenue demographics and rethink its subscription value proposition.
 
 ---
 
-## 📁 GitHub Stats
+### 2. Maximizing Marketing ROI with Influencer Performance Analysis
 
-> 🚧 *This portfolio is always evolving. Stay tuned for more projects!*
+<p align="center">
+  <img src="assets/images/powerbi_dashboard.png" width="700" alt="YouTuber Analysis Dashboard">
+</p>
+
+*   **Description:** An analysis to identify top-performing UK YouTubers for a marketing campaign by enriching a static dataset with live data from the YouTube API.
+*   **Technologies:** Python (YouTube API), SQL Server, Power BI
+*   **Links:** **[GitHub Repository](https://github.com/SayanrupBarman/youtuber-sponshership-analysis)**
+
+#### Business Problem
+The marketing department needed to make a data-driven decision on which top UK YouTubers to partner with. The objective was to identify influencers who would provide the highest potential return on investment (ROI).
+
+#### Impact (Result)
+The analysis provided a clear framework for selecting influencers. It demonstrated that for maximum subscriber reach, `NoCopyrightSounds` is the top choice, while for campaigns targeting the highest view count, `DanTDM` is the leader. This enables the marketing team to align their choice of YouTuber with strategic goals.
 
 ---
 
-### 🧭 Let's Connect
+### 3. Building a Scalable Analytics Warehouse for Uber Trip Data
 
-If you find something interesting here or just want to chat, feel free to reach out!
+*   **Description:** An end-to-end ETL pipeline to process Uber trip data, model it into a star schema, and load it into a data warehouse for analytics.
+*   **Technologies:** Python (Pandas), Google BigQuery, SQL
+*   **Links:** **[GitHub Repository](https://github.com/SayanrupBarman/uber-data-engineering-pipeline.git)**
 
+#### Business Problem
+To enable business intelligence on Uber trip data, a robust pipeline was needed to process raw data, transform it into a structured format, and load it into a central data warehouse.
+
+#### Impact (Result)
+This project successfully built a modern, scalable data engineering pipeline. The resulting star schema in BigQuery allows analysts to easily query key business metrics like average fare amount ($13.25) and average trip distance (3.03 miles), demonstrating a strong understanding of data warehousing principles.
+
+---
+
+### Leadership & Community Involvement
+
+Beyond my technical projects, I am actively involved in various leadership and community roles that have honed my collaboration, communication, and event management skills.
+
+*   **Treasurer, INSEES NIT Silchar:** Managed budgeting, sponsorship outreach, and stakeholder relations, overseeing funds to support academic and student initiatives.
+*   **Community Manager, BACE NIT Silchar:** Led community operations and engagement, ensuring a constructive environment and smooth content flow for members.
+*   **Event Coordination:** As a head at Illuminits & Symphonits and an event coordinator for college fests like Tecnoesis, I have experience in coordinating events, managing logistics, and providing creative support.
+*   **Volunteer & Interests:** I am a volunteer for the Eco Club and enjoy creative pursuits like art and guitar, reflecting my passion for teamwork and continuous learning.
+
+---
+
+### Resume & Contact
+
+*   **[Download My Resume](https://drive.google.com/file/d/1ojOCLSvwuZW5dR2vqM5KAj3JzBYGPRTk/view?usp=sharing)**
+*   **Email:** sayanrupb_ug_22@ei.nits.ac.in
+*   **Contact:** 9706012592
+*   **GitHub:** [SayanrupBarman](https://github.com/SayanrupBarman)
