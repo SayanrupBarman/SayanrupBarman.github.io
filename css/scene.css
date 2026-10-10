@@ -1,0 +1,309 @@
+/*
+ * The parcel in CSS 3D.
+ * Units: --W, --D, --H, --F, --T are unitless pixel sizes set from geometry.js.
+ * The parcel's own plane is the floor (z = 0); walls rise toward +z.
+ */
+
+.stage {
+  position: fixed; inset: 0;
+  overflow: hidden;
+  perspective-origin: 50% 50%;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  transition: opacity .9s ease, filter .9s var(--ease-soft);
+}
+body[data-state="loading"] .stage { opacity: 0; }
+body.reader-open .stage { filter: blur(3px) brightness(.7) saturate(.85); }
+
+.camera {
+  position: absolute; left: 50%; top: 50%;
+  width: 0; height: 0;
+  transform-style: preserve-3d;
+}
+
+.parcel {
+  position: absolute;
+  left: calc(var(--W) * -.5px); top: calc(var(--D) * -.5px);
+  width: calc(var(--W) * 1px); height: calc(var(--D) * 1px);
+  transform-style: preserve-3d;
+}
+
+.probe {
+  position: absolute; left: 0; top: 0;
+  width: 1px; height: 1px;
+  pointer-events: none;
+}
+
+/* ─── surfaces ──────────────────────────────────────────────────────── */
+.face {
+  position: absolute; inset: 0;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  background-color: var(--cardboard);
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+}
+.cardboard::before {
+  content: ''; position: absolute; inset: 0;
+  background: var(--tex-grain, none) repeat;
+  background-size: 160px;
+  opacity: .5;
+  pointer-events: none;
+}
+/* Interior surfaces darken until the light comes on. */
+.inside::after {
+  content: ''; position: absolute; inset: 0;
+  background: #140d07;
+  opacity: calc((1 - var(--light, 1)) * .95);
+  pointer-events: none;
+}
+
+.art-box-front { background-image: var(--art-box-front); }
+.art-box-side { background-image: linear-gradient(rgba(45, 26, 10, .14), rgba(45, 26, 10, .14)), var(--art-box-side); }
+.art-flap-long { background-image: linear-gradient(rgba(255, 248, 232, .1), rgba(255, 248, 232, .1)), var(--art-flap-long); }
+.art-flap-short { background-image: linear-gradient(rgba(255, 248, 232, .06), rgba(255, 248, 232, .06)), var(--art-flap-short); }
+.art-box-inside { background-image: var(--art-box-inside); background-color: #d8c29b; }
+.art-box-floor { background-image: var(--art-box-floor); background-color: #d4bd95; }
+.wall .face.inner { background-image: linear-gradient(to bottom, rgba(40, 22, 8, 0) 35%, rgba(40, 22, 8, .3)), var(--art-box-inside); }
+/* In the dark, a little daylight still falls on the inner walls near the rim. */
+.wall .face.inner::after {
+  background: linear-gradient(to bottom, rgba(20, 13, 7, .35), rgba(20, 13, 7, .9) 38%, #140d07 70%);
+  opacity: calc(1 - var(--light, 1));
+}
+
+.ground-shadow {
+  position: absolute;
+  left: -46px; top: -36px;
+  width: calc(var(--W) * 1px + 92px); height: calc(var(--D) * 1px + 80px);
+  transform: translate3d(28px, 34px, -1px);
+  border-radius: 48px;
+  background: radial-gradient(closest-side, rgba(60, 35, 15, .45), rgba(60, 35, 15, .22) 62%, rgba(60, 35, 15, 0));
+  pointer-events: none;
+}
+
+.floor { transform: translateZ(.5px); }
+.floor-glow {
+  position: absolute; inset: 14% 18%;
+  transform: translateZ(1px);
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(255, 210, 130, .45), rgba(255, 210, 130, 0));
+  opacity: 0;
+  transition: opacity 1.2s ease;
+  pointer-events: none;
+}
+body[data-state="dark"] .floor-glow { opacity: 1; }
+
+/* ─── walls: built as a "front wall" turned to each side ───────────────── */
+.wall, .flap {
+  position: absolute;
+  transform-style: preserve-3d;
+  transform-origin: 50% 100%;
+}
+/* Walls reach 1.6px past --H so no sliver of the dark inside shows under the raised flaps. */
+.wall { top: calc((var(--D) * .5 - var(--H)) * 1px - 1.6px); height: calc(var(--H) * 1px + 1.6px); }
+.wall.front, .wall.back { left: 0; width: calc(var(--W) * 1px); }
+.wall.left, .wall.right { left: calc((var(--W) - var(--D)) * .5px); width: calc(var(--D) * 1px); }
+.wall.front { transform: translateY(calc(var(--D) * .5px)) rotateX(-90deg); }
+.wall.back { transform: rotateZ(180deg) translateY(calc(var(--D) * .5px)) rotateX(-90deg); }
+.wall.left { transform: rotateZ(90deg) translateY(calc(var(--W) * .5px)) rotateX(-90deg); }
+.wall.right { transform: rotateZ(-90deg) translateY(calc(var(--W) * .5px)) rotateX(-90deg); }
+.face.inner { transform: rotateY(180deg) translateZ(2px); }
+
+/* The tape runs over the top and a little way down the short walls. */
+.tape-drop {
+  position: absolute; top: -1px;
+  left: calc((var(--D) - var(--T)) * .5px);
+  width: calc(var(--T) * 1px); height: calc(var(--drop) * 1px);
+  transform: translateZ(.7px);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  background: linear-gradient(90deg,
+    rgba(255, 255, 255, .7) 0 1.2px, rgba(92, 61, 34, .25) 1.2px 2.2px,
+    rgba(243, 230, 200, .3) 2.2px, rgba(255, 255, 255, .08) 42%, rgba(255, 255, 255, .28) 60%,
+    rgba(255, 255, 255, .08) 70%, rgba(243, 230, 200, .3) calc(100% - 2.2px),
+    rgba(92, 61, 34, .25) calc(100% - 2.2px) calc(100% - 1.2px), rgba(255, 255, 255, .7) calc(100% - 1.2px));
+  clip-path: polygon(0 0, 100% 0, 100% 93%, 86% 100%, 69% 94%, 51% 100%, 33% 95%, 16% 100%, 0 94%);
+}
+
+/* ─── flaps (hinged on the top edge of each wall) ──────────────────────── */
+.flap {
+  --a: 0deg;
+  top: calc((var(--D) * .5 - var(--F)) * 1px);
+  height: calc(var(--F) * 1px);
+  transition: transform 1.05s cubic-bezier(.5, .05, .28, 1);
+}
+.flap.front, .flap.back { left: 0; width: calc(var(--W) * 1px); }
+.flap.left, .flap.right { left: calc((var(--W) - var(--D)) * .5px); width: calc(var(--D) * 1px); }
+.flap.front { transform: translateY(calc(var(--D) * .5px)) translateZ(calc(var(--H) * 1px + 1.6px)) rotateX(var(--a)); }
+.flap.back { transform: rotateZ(180deg) translateY(calc(var(--D) * .5px)) translateZ(calc(var(--H) * 1px + 1.6px)) rotateX(var(--a)); }
+.flap.left { transform: rotateZ(90deg) translateY(calc(var(--W) * .5px)) translateZ(calc(var(--H) * 1px + .6px)) rotateX(var(--a)); }
+.flap.right { transform: rotateZ(-90deg) translateY(calc(var(--W) * .5px)) translateZ(calc(var(--H) * 1px + .6px)) rotateX(var(--a)); }
+.flap .face.inner { transform: rotateY(180deg) translateZ(1px); }
+.flap .face.outer { box-shadow: inset 0 -2px 3px rgba(60, 35, 12, .25); }
+.liner { background-image: linear-gradient(rgba(255, 246, 228, .12), rgba(255, 246, 228, .12)), var(--art-box-inside); }
+
+.tape-half {
+  position: absolute; left: 0; top: -.5px;
+  width: calc(var(--W) * 1px); height: calc(var(--T) * .5px + .5px);
+  transform: translateZ(.8px);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+.tape-half svg { display: block; width: 100%; height: 100%; overflow: hidden; }
+
+/* Cut through: the long flaps relax upward a touch, then everything opens. */
+.parcel.is-cut .flap.front,
+.parcel.is-cut .flap.back { --a: -5deg; transition-duration: .4s; }
+.parcel.is-open .flap.front { --a: -156deg; transition-duration: 1.05s; transition-delay: 0s; }
+.parcel.is-open .flap.back { --a: -116deg; transition-duration: 1.05s; transition-delay: .13s; }
+.parcel.is-open .flap.left { --a: -134deg; transition-delay: .4s; }
+.parcel.is-open .flap.right { --a: -147deg; transition-delay: .52s; }
+.parcel.no-anim, .parcel.no-anim * { transition: none !important; }
+
+/* ─── contents ─────────────────────────────────────────────────────────── */
+.contents { position: absolute; inset: 0; transform-style: preserve-3d; }
+
+.photo-card {
+  position: absolute; margin: 0;
+  transform: translateZ(1.6px) rotate(var(--rot));
+}
+.photo-frame {
+  position: absolute; inset: 0;
+  padding: 9px 9px 32px;
+  background: #fbf8f0;
+  border-radius: 2px 3px 2px 4px;
+  box-shadow: 2px 5px 9px rgba(30, 18, 8, .38), 0 0 0 .5px rgba(60, 40, 20, .2);
+}
+.photo-img {
+  display: block; width: 100%; height: 100%;
+  object-fit: cover;
+  background: #dfe5ea;
+  filter: sepia(.12) saturate(.95);
+}
+.photo-caption {
+  position: absolute; left: 6px; right: 6px; bottom: 5px;
+  font-size: 18px; line-height: 1; text-align: center;
+  color: var(--ink);
+}
+.washi {
+  position: absolute; top: -8px; left: 50%;
+  width: 58px; height: 17px;
+  transform: translateX(-50%) rotate(-5deg);
+  background: repeating-linear-gradient(45deg, rgba(194, 104, 74, .62) 0 6px, rgba(233, 182, 150, .62) 6px 12px);
+  clip-path: polygon(3% 0, 97% 6%, 100% 50%, 96% 100%, 2% 94%, 0 50%);
+}
+
+.book3d {
+  position: absolute;
+  width: calc(var(--bw) * 1px); height: calc(var(--bh) * 1px);
+  transform-style: preserve-3d;
+  transform: translateZ(.6px) rotate(var(--rot)) translateZ(var(--lift, 0px));
+  transition: transform .4s var(--ease-soft);
+}
+.book3d.is-away { visibility: hidden; }
+.book-shadow {
+  position: absolute; inset: 2px;
+  transform: translate3d(7px, 9px, .2px);
+  border-radius: 4px;
+  background: rgba(30, 18, 8, .42);
+  filter: blur(6px);
+  transition: transform .4s var(--ease-soft), opacity .4s;
+}
+.book-edge {
+  position: absolute;
+  top: calc((var(--bh) * .5 - var(--bt)) * 1px);
+  height: calc(var(--bt) * 1px);
+  transform-origin: 50% 100%;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+.book-edge.front, .book-edge.back { left: 0; width: calc(var(--bw) * 1px); }
+.book-edge.left, .book-edge.right { left: calc((var(--bw) - var(--bh)) * .5px); width: calc(var(--bh) * 1px); }
+.book-edge.front { transform: translateY(calc(var(--bh) * .5px)) rotateX(-90deg); }
+.book-edge.back { transform: rotateZ(180deg) translateY(calc(var(--bh) * .5px)) rotateX(-90deg); }
+.book-edge.left { transform: rotateZ(90deg) translateY(calc(var(--bw) * .5px)) rotateX(-90deg); }
+.book-edge.right { transform: rotateZ(-90deg) translateY(calc(var(--bw) * .5px)) rotateX(-90deg); }
+.book-edge.pages { background: repeating-linear-gradient(to bottom, #f7f0de 0 1.3px, #e0d3b8 1.3px 2.3px); }
+.book-edge.spine { background: #2f5853; }
+
+.book-top {
+  position: absolute; inset: 0;
+  margin: 0; padding: 0; border: 0;
+  transform: translateZ(calc(var(--bt) * 1px));
+  border-radius: 2px 6px 6px 2px;
+  background: #41706b var(--art-book-cover) center / 100% 100% no-repeat;
+  box-shadow: inset 4px 0 7px rgba(0, 0, 0, .28), inset -1px -1px 0 rgba(0, 0, 0, .2);
+  color: inherit;
+  font: inherit;
+}
+.book-title, .flyer-title {
+  position: absolute; left: 10%; right: 8%; top: 13%;
+  line-height: .95; text-align: center;
+  color: #f3e3b8;
+  transform: rotate(-3deg);
+  text-shadow: 0 1px 0 rgba(0, 0, 0, .25);
+  pointer-events: none;
+  font-weight: 700;
+}
+.book-title { font-size: calc(var(--bw) * .17px); }
+
+body[data-state="overhead"] .book3d:hover,
+body[data-state="overhead"] .book3d:focus-within { --lift: 14px; }
+body[data-state="overhead"] .book3d:hover .book-shadow,
+body[data-state="overhead"] .book3d:focus-within .book-shadow { transform: translate3d(16px, 20px, .2px); opacity: .8; }
+
+/* ─── the question mark (a billboard that always faces the camera) ──────── */
+.question {
+  position: absolute;
+  left: calc(var(--W) * .5px - 52px); top: calc(var(--D) * .42px - 73px);
+  width: 104px; height: 146px;
+  margin: 0; padding: 0; border: 0;
+  background: none;
+  transform: translateZ(calc(var(--H) * .62px)) rotateZ(calc(var(--spin, 0) * -1deg)) rotateX(calc(var(--tilt, 0) * -1deg));
+  opacity: 0; visibility: hidden;
+  /* Hide after the fade; show (and become focusable) at once. */
+  transition: opacity .6s ease, visibility 0s linear .6s;
+  cursor: pointer;
+}
+body[data-state="dark"] .question { opacity: 1; visibility: visible; transition: opacity .6s ease, visibility 0s; }
+.question:focus-visible { outline-offset: 0; border-radius: 30px; }
+.question-glyph {
+  display: block; width: 100%; height: 100%;
+  animation: question-float 3.4s ease-in-out infinite;
+}
+body[data-state="dark"] .question-glyph { animation: question-pop .7s cubic-bezier(.3, 1.6, .5, 1) both, question-float 3.4s ease-in-out .7s infinite; }
+.question-img {
+  display: block; width: 100%; height: 100%;
+  filter: drop-shadow(0 0 10px rgba(255, 205, 110, .8)) drop-shadow(0 0 2px rgba(255, 230, 170, .9));
+  transition: transform .3s ease;
+}
+.question:hover .question-img, .question:focus-visible .question-img { transform: scale(1.1) rotate(-4deg); }
+@keyframes question-float {
+  0%, 100% { transform: translateY(0) rotate(-3deg); }
+  50% { transform: translateY(-10px) rotate(3deg); }
+}
+@keyframes question-pop {
+  from { transform: translateY(30px) scale(.4); opacity: 0; }
+  to { transform: translateY(0) scale(1); opacity: 1; }
+}
+
+/* ─── cursors (only for precise pointers) ──────────────────────────────── */
+@media (hover: hover) and (pointer: fine) {
+  body[data-state="sealed"] .parcel,
+  body[data-state="cutting"] .parcel,
+  body[data-state="sealed"] .stage.is-pressing,
+  body[data-state="cutting"] .stage.is-pressing { cursor: var(--cursor-knife, crosshair); }
+  .stage.is-cutting,
+  .stage.is-cutting .parcel { cursor: var(--cursor-knife-pressed, crosshair) !important; }
+  body[data-state="dark"] .question,
+  body[data-state="overhead"] .book-top { cursor: var(--cursor-hand, pointer); }
+}
+body:not([data-state="overhead"]) .book-top { pointer-events: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .flap, .book3d, .book-shadow, .floor-glow { transition: none !important; }
+  .question-glyph,
+  body[data-state="dark"] .question-glyph { animation: none; }
+  .question:hover .question-img { transform: none; }
+}

@@ -1,0 +1,165 @@
+/* ─── fonts (self-hosted, SIL OFL — see assets/fonts) ─────────────────── */
+@font-face { font-family: 'Caveat'; font-weight: 400; font-display: swap; src: url('../assets/fonts/caveat-latin-400-normal.woff2') format('woff2'); }
+@font-face { font-family: 'Caveat'; font-weight: 500; font-display: swap; src: url('../assets/fonts/caveat-latin-500-normal.woff2') format('woff2'); }
+@font-face { font-family: 'Caveat'; font-weight: 700; font-display: swap; src: url('../assets/fonts/caveat-latin-700-normal.woff2') format('woff2'); }
+@font-face { font-family: 'Lora'; font-weight: 400; font-display: swap; src: url('../assets/fonts/lora-latin-400-normal.woff2') format('woff2'); }
+@font-face { font-family: 'Lora'; font-weight: 400; font-style: italic; font-display: swap; src: url('../assets/fonts/lora-latin-400-italic.woff2') format('woff2'); }
+@font-face { font-family: 'Lora'; font-weight: 600; font-display: swap; src: url('../assets/fonts/lora-latin-600-normal.woff2') format('woff2'); }
+
+:root {
+  --bg: #ece0c8;
+  --bg-edge: #d5c09c;
+  --ink: #3f2d22;
+  --ink-soft: #6d5747;
+  --accent: #b6532f;
+  --paper: #fbf6ea;
+  --cardboard: #c99c67;
+  --focus: #b6532f;
+  --font-hand: 'Caveat', 'Segoe Print', 'Bradley Hand', cursive;
+  --font-body: 'Lora', Georgia, 'Times New Roman', serif;
+  --ease-soft: cubic-bezier(.45, .05, .25, 1);
+  color-scheme: light;
+}
+
+:root.owner-hand { --font-hand: 'Owner Hand', 'Caveat', cursive; }
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  height: 100%;
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+
+body {
+  font-family: var(--font-body);
+  color: var(--ink);
+  background-color: var(--bg);
+  background-image:
+    radial-gradient(ellipse 75% 70% at 50% 46%, #f6eedd 0%, #ecdfc6 55%, var(--bg-edge) 100%),
+    var(--tex-paper, none);
+  background-blend-mode: multiply;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.hand { font-family: var(--font-hand); font-weight: 500; }
+
+.sr-only {
+  position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
+
+:focus-visible {
+  outline: 2.5px dashed var(--focus);
+  outline-offset: 4px;
+  border-radius: 6px;
+}
+
+/* ─── loading ─────────────────────────────────────────────────────────── */
+.loader {
+  position: fixed; inset: 0; z-index: 50;
+  display: grid; place-content: center; justify-items: center; gap: 10px;
+  background: inherit;
+  background-color: var(--bg);
+  transition: opacity .6s ease, visibility .6s;
+}
+.loader.is-done { opacity: 0; visibility: hidden; pointer-events: none; }
+.loader-parcel { width: 96px; height: 80px; animation: loader-bob 1.6s ease-in-out infinite; }
+.loader-text { margin: 0; font-size: 30px; color: var(--ink-soft); }
+.loader-track {
+  width: 150px; height: 6px; border-radius: 6px;
+  background: rgba(63, 45, 34, .12);
+  overflow: hidden;
+}
+.loader-track span {
+  display: block; height: 100%;
+  background: var(--accent);
+  border-radius: inherit;
+  transform: scaleX(0); transform-origin: left;
+  transition: transform .25s ease;
+}
+@keyframes loader-bob {
+  0%, 100% { transform: translateY(0) rotate(-2deg); }
+  50% { transform: translateY(-6px) rotate(2deg); }
+}
+
+.fatal {
+  position: fixed; inset: auto 16px 40%; z-index: 60;
+  margin: 0 auto; max-width: 30rem; padding: 18px 22px;
+  background: var(--paper); border-radius: 10px;
+  box-shadow: 0 10px 30px rgba(60, 40, 20, .2);
+  font-size: 18px; line-height: 1.5; text-align: center;
+}
+
+/* ─── the scene frame ─────────────────────────────────────────────────── */
+.experience { position: fixed; inset: 0; }
+
+.instruction {
+  position: fixed; left: 50%; bottom: max(24px, 6vh); z-index: 5;
+  transform: translateX(-50%) rotate(-1.5deg);
+  margin: 0; width: max-content; max-width: calc(100vw - 32px);
+  font-size: clamp(24px, 3.6vw, 34px); line-height: 1.1; text-align: center;
+  color: var(--ink);
+  pointer-events: none;
+  transition: opacity .5s ease, transform .5s ease;
+}
+.instruction img { display: block; max-width: min(420px, 86vw); height: auto; }
+body:not([data-state="sealed"]):not([data-state="cutting"]) .instruction {
+  opacity: 0; transform: translateX(-50%) translateY(10px) rotate(-1.5deg);
+}
+
+.cut-slider {
+  position: fixed; left: 50%; bottom: max(4px, 2vh); z-index: 6;
+  transform: translateX(-50%);
+  padding: 4px 12px; border-radius: 999px;
+  font-size: 20px; color: var(--ink-soft);
+  opacity: 0;
+  transition: opacity .2s;
+}
+.cut-slider:focus-visible { opacity: 1; background: rgba(251, 246, 234, .9); }
+/* Make room for the keyboard hint under the instruction. */
+body:has(.cut-slider:focus-visible) .instruction { transform: translateX(-50%) translateY(-30px) rotate(-1.5deg); }
+body:not([data-state="sealed"]):not([data-state="cutting"]) .cut-slider { display: none; }
+
+.knife-marker {
+  position: fixed; left: 0; top: 0; z-index: 7;
+  width: 32px; height: 32px;
+  margin: -29px 0 0 -3px; /* put the blade tip (3, 29) on the point */
+  pointer-events: none;
+  filter: drop-shadow(0 2px 2px rgba(0, 0, 0, .25));
+}
+
+/* ─── controls ─────────────────────────────────────────────────────────── */
+.controls {
+  position: fixed; top: max(12px, env(safe-area-inset-top)); right: max(12px, env(safe-area-inset-right)); z-index: 40;
+  display: flex; gap: 8px;
+}
+.control {
+  width: 44px; height: 44px; padding: 0;
+  display: grid; place-items: center;
+  border: 0; border-radius: 50%;
+  background: rgba(251, 246, 234, .55);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, .6) inset, 0 2px 6px rgba(70, 45, 20, .12);
+  color: var(--ink);
+  cursor: pointer;
+  opacity: .62;
+  transition: opacity .2s, transform .2s, background .2s;
+}
+.control:hover, .control:focus-visible { opacity: 1; background: rgba(251, 246, 234, .92); transform: rotate(-4deg); }
+.control:disabled { opacity: .25; cursor: default; transform: none; }
+.control svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.control .speaker { fill: rgba(63, 45, 34, .12); }
+.control .cross { display: none; }
+.control[data-muted="true"] .waves { display: none; }
+.control[data-muted="true"] .cross { display: inline; }
+body[data-state="loading"] .controls { visibility: hidden; }
+
+@media (hover: hover) and (pointer: fine) {
+  .control:not(:disabled) { cursor: var(--cursor-hand, pointer); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .loader-parcel { animation: none; }
+  .control:hover, .control:focus-visible { transform: none; }
+}

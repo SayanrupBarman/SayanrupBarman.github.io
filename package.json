@@ -1,0 +1,17 @@
+{
+  "name": "parcel-site",
+  "version": "1.0.0",
+  "private": true,
+  "description": "A hand-made parcel personal website: cut the tape, look inside, read the little book.",
+  "type": "module",
+  "scripts": {
+    "serve": "node tools/serve.mjs",
+    "test": "node --test \"tests/unit/*.test.js\"",
+    "test:coverage": "node --test --experimental-test-coverage \"tests/unit/*.test.js\"",
+    "test:e2e": "playwright test",
+    "assets:placeholders": "python tools/generate_placeholders.py"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.56.1"
+  }
+}
