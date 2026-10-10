@@ -1,87 +1,325 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>A parcel for you</title>
-  <meta name="description" content="A small hand-made parcel. Cut the tape and see what is inside.">
-  <meta name="theme-color" content="#e9dcc3">
-  <link rel="icon" href="assets/ui/favicon.svg" type="image/svg+xml">
-  <link rel="preload" href="assets/fonts/caveat-latin-500-normal.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="preload" href="assets/fonts/lora-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="css/base.css">
-  <link rel="stylesheet" href="css/scene.css">
-  <link rel="stylesheet" href="css/book.css">
-  <script src="vendor/page-flip/page-flip.browser.js" defer></script>
-  <script type="module" src="js/main.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="GabeCubeAura - Transform your Steam Machine's 17-LED strip into a live command center with game alerts, weather, system monitoring, and custom effects.">
+    <meta name="keywords" content="decky, decky-loader, decky-plugin, gabecube, gabecubeaura, hardware-monitoring, led-controller, linux-gaming, rgb, steam, steam-machine, steam-os, steammachine, system-monitor">
+    <meta name="author" content="Sayanrup Barman">
+    <meta property="og:title" content="GabeCubeAura - Illuminate Your Steam Machine">
+    <meta property="og:description" content="Bring the Steam Machine's 17-LED strip to life with Steam event alerts, game artwork, launch animations, custom effects, live weather, CPU/GPU monitoring, controller battery levels, and real-time screen color sync.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://github.com/SayanrupBarman/GabeCubeAura">
+    <meta name="twitter:card" content="summary_large_image">
+    <title>GabeCubeAura - Illuminate Your Steam Machine</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: #f4f6f9;
+            color: #1f2937;
+            line-height: 1.7;
+        }
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        .hero {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 20px;
+            padding: 60px 40px;
+            text-align: center;
+            margin-bottom: 40px;
+            box-shadow: 0 15px 35px rgba(102, 126, 234, 0.3);
+        }
+        .hero h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 15px;
+            letter-spacing: -0.5px;
+        }
+        .hero p {
+            font-size: 1.2rem;
+            opacity: 0.95;
+            max-width: 750px;
+            margin: 0 auto 30px;
+        }
+        .btn-primary {
+            display: inline-block;
+            background: white;
+            color: #764ba2;
+            padding: 16px 40px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1.1rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        }
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin: 40px 0;
+        }
+        .feature-card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+        }
+        .feature-card h3 {
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+            color: #1f2937;
+        }
+        .feature-card p {
+            color: #4b5563;
+            font-size: 0.95rem;
+        }
+        .section {
+            background: white;
+            border-radius: 15px;
+            padding: 35px;
+            margin: 30px 0;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        }
+        .section h2 {
+            font-size: 2rem;
+            color: #1f2937;
+            margin-bottom: 20px;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+            display: inline-block;
+        }
+        .section h3 {
+            font-size: 1.3rem;
+            color: #374151;
+            margin: 20px 0 10px;
+        }
+        .section p, .section ul, .section ol {
+            margin-bottom: 15px;
+            color: #4b5563;
+        }
+        .section ul, .section ol {
+            padding-left: 25px;
+        }
+        .section li {
+            margin-bottom: 8px;
+        }
+        .important-note {
+            background: #fff7ed;
+            border-left: 5px solid #f97316;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .download-btn {
+            display: inline-block;
+            background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+            color: white;
+            padding: 18px 45px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1.2rem;
+            box-shadow: 0 8px 20px rgba(34, 197, 94, 0.3);
+            transition: all 0.3s ease;
+            margin: 20px 0;
+        }
+        .download-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(34, 197, 94, 0.4);
+        }
+        .setup-steps {
+            background: #f0f4ff;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 15px 0;
+            border: 1px solid #c7d2fe;
+        }
+        .setup-steps ol {
+            counter-reset: step;
+            list-style-position: inside;
+        }
+        .setup-steps ol li {
+            counter-increment: step;
+            margin-bottom: 12px;
+            padding-left: 10px;
+            font-weight: 500;
+        }
+        .setup-steps ol li::before {
+            content: "Step " counter(step) ": ";
+            font-weight: 700;
+            color: #4f46e5;
+        }
+        .footer {
+            text-align: center;
+            padding: 30px;
+            color: #6b7280;
+            font-size: 0.9rem;
+        }
+        @media (max-width: 768px) {
+            .hero {
+                padding: 40px 20px;
+            }
+            .hero h1 {
+                font-size: 2.2rem;
+            }
+            .container {
+                padding: 20px 15px;
+            }
+            .section {
+                padding: 25px 20px;
+            }
+        }
+    </style>
 </head>
-<body data-state="loading">
-  <div class="loader" id="loader" role="status" aria-live="polite">
-    <svg class="loader-parcel" viewBox="0 0 120 100" aria-hidden="true">
-      <path d="M14 38 L60 18 L106 38 L60 58 Z" fill="#d9b483" stroke="#4a3426" stroke-width="2.4" stroke-linejoin="round"/>
-      <path d="M14 38 L14 78 L60 96 L60 58 Z" fill="#c99c67" stroke="#4a3426" stroke-width="2.4" stroke-linejoin="round"/>
-      <path d="M106 38 L106 78 L60 96 L60 58 Z" fill="#b78a56" stroke="#4a3426" stroke-width="2.4" stroke-linejoin="round"/>
-      <path d="M37 28 L83 48" stroke="#fff6e2" stroke-width="7" opacity=".7" stroke-linecap="round"/>
-    </svg>
-    <p class="loader-text hand" id="loader-text">unpacking…</p>
-    <div class="loader-track" aria-hidden="true"><span id="loader-progress"></span></div>
-  </div>
+<body>
+    <div class="container">
+        <!-- Hero Section -->
+        <div class="hero">
+            <h1>🎮 GabeCubeAura - Light Up Your Steam Machine</h1>
+            <p>Dynamic LED control with real-time game alerts, system stats, and vivid effects</p>
+            <a href="https://github.com/SayanrupBarman/GabeCubeAura" class="btn-primary" target="_blank" rel="noopener noreferrer">🚀 Get Started Now</a>
+        </div>
 
-  <p class="fatal" id="fatal" role="alert" hidden></p>
+        <!-- What is it -->
+        <div class="section">
+            <h2>💡 What is GabeCubeAura?</h2>
+            <p>GabeCubeAura is a powerful application that transforms your Steam Machine's 17-LED strip into an intelligent, colorful command center. Whether you want to know when your friends come online, see your CPU temperature at a glance, or sync your lights to your screen's colors — GabeCubeAura makes it all happen automatically.</p>
+            <p>Designed with simplicity in mind, this tool works right out of the box. No coding required. No complicated settings. Just plug in, install, and watch your Steam Machine come alive with vibrant, meaningful colors.</p>
+        </div>
 
-  <main class="experience" id="experience">
-    <div class="stage" id="stage">
-      <div class="camera" id="camera"></div>
+        <!-- Features Grid -->
+        <div class="feature-grid">
+            <div class="feature-card">
+                <h3>🎮 Steam Event Alerts</h3>
+                <p>Get instant visual notifications when friends join, messages arrive, or game downloads complete. Never miss a moment again.</p>
+            </div>
+            <div class="feature-card">
+                <h3>🖼️ Game Artwork Display</h3>
+                <p>Your LED strip shows the dominant colors of your current game's artwork, creating an immersive ambient glow that matches your gameplay.</p>
+            </div>
+            <div class="feature-card">
+                <h3>🚀 Launch Animations</h3>
+                <p>Enjoy custom light animations every time you start a game. Choose from exciting preset effects or create your own unique patterns.</p>
+            </div>
+            <div class="feature-card">
+                <h3>☀️ Live Weather Sync</h3>
+                <p>See the weather outside through your LED colors! Blue for rain, yellow for sunny days, white for snow — a beautiful ambient display.</p>
+            </div>
+            <div class="feature-card">
+                <h3>📊 CPU/GPU Monitoring</h3>
+                <p>Monitor your system's temperature and load with a color gradient. Green means cool, yellow is warm, red is critical. Keep your machine healthy.</p>
+            </div>
+            <div class="feature-card">
+                <h3>🎮 Controller Battery</h3>
+                <p>Know exactly when your controller is running low. A quick glance at your LED strip tells you the charge level of every paired controller.</p>
+            </div>
+            <div class="feature-card">
+                <h3>🖥️ Screen Color Sync</h3>
+                <p>Capture the average colors of your screen in real-time and project them onto your LEDs. Perfect for movies, games, or any video content.</p>
+            </div>
+            <div class="feature-card">
+                <h3>✨ Custom Effects</h3>
+                <p>Create your own stunning light effects. Choose colors, speeds, and patterns. Save your favorites and switch between them anytime.</p>
+            </div>
+        </div>
+
+        <!-- Download Section -->
+        <div class="section">
+            <h2>📥 Download & Installation</h2>
+            <p>Getting GabeCubeAura on your Steam Machine is incredibly easy. Just follow these simple steps:</p>
+            
+            <div class="setup-steps">
+                <ol>
+                    <li><strong>Visit the download page:</strong> <a href="https://github.com/SayanrupBarman/GabeCubeAura" target="_blank" rel="noopener noreferrer">https://github.com/SayanrupBarman/GabeCubeAura</a></li>
+                    <li><strong>Click the Download Button:</strong> Look for the green "Code" button on the page and click it. Then select "Download ZIP" from the dropdown menu. The file will be saved to your Downloads folder.</li>
+                    <li><strong>Extract the ZIP file:</strong> Right-click on the downloaded ZIP file and choose "Extract All" to unpack the application files.</li>
+                    <li><strong>Run the Application:</strong> Open the extracted folder, find the application file (often named GabeCubeAura or GabeCubeAura.exe), and double-click it to launch.</li>
+                    <li><strong>Wait for setup:</strong> The app will quickly scan your system and start controlling your LED strip automatically. You might see a quick flash of colors on your strip to confirm it's working.</li>
+                    <li><strong>Enjoy your lights!</strong> Explore the settings to customize colors, effects, and alerts to your liking.</li>
+                </ol>
+            </div>
+
+            <div style="text-align: center; margin: 25px 0;">
+                <a href="https://github.com/SayanrupBarman/GabeCubeAura" class="download-btn" target="_blank" rel="noopener noreferrer">📦 Download GabeCubeAura Now</a>
+            </div>
+        </div>
+
+        <!-- Why Choose -->
+        <div class="section">
+            <h2>⭐ Why You'll Love It</h2>
+            <ul>
+                <li><strong>Zero Configuration:</strong> Everything works automatically after installation. GabeCubeAura detects your hardware and applies smart defaults.</li>
+                <li><strong>Beautiful & Functional:</strong> Not just pretty colors — every light change carries meaning and useful information.</li>
+                <li><strong>Low Resource Usage:</strong> Runs efficiently in the background without slowing down your gaming.</li>
+                <li><strong>Regular Updates:</strong> Continuous improvements with new effects and features.</li>
+                <li><strong>Full Customization:</strong> Make it yours. Adjust everything from brightness to color schemes to animation styles.</li>
+                <li><strong>Free & Open Source:</strong> Enjoy this tool completely free, forever. No hidden costs or premium tiers.</li>
+            </ul>
+        </div>
+
+        <!-- How It Works -->
+        <div class="section">
+            <h2>🔧 How It Works</h2>
+            <p>GabeCubeAura communicates directly with your Steam Machine's built-in LED controller. It reads various data sources in real-time:</p>
+            <h3>System Data Sources</h3>
+            <ul>
+                <li>CPU temperature and load</li>
+                <li>GPU temperature and utilization</li>
+                <li>Connected controllers and their battery levels</li>
+                <li>Steam events (friends, messages, downloads)</li>
+                <li>Weather data based on your location (optional)</li>
+                <li>Screen content analysis for color sync</li>
+            </ul>
+            <h3>Processing & Display</h3>
+            <p>The application processes these inputs using smart algorithms to determine the most appropriate LED colors and patterns. You can adjust sensitivity and thresholds in the settings panel.</p>
+        </div>
+
+        <!-- Troubleshooting -->
+        <div class="section">
+            <h2>❓ Troubleshooting Tips</h2>
+            <h3>Lights not working?</h3>
+            <ul>
+                <li>Make sure your Steam Machine is powered on and the LED strip is physically connected.</li>
+                <li>Restart the application from the system tray.</li>
+                <li>Check if other LED control software is interfering. Close any conflicting apps.</li>
+            </ul>
+            <h3>Performance issues?</h3>
+            <ul>
+                <li>Lower the update frequency in the settings panel.</li>
+                <li>Turn off screen color sync if you don't need it.</li>
+                <li>Ensure your system drivers are up to date.</li>
+            </ul>
+            <div class="important-note">
+                <strong>Important:</strong> This application is designed specifically for the Steam Machine hardware. It may not work with other devices. For support, visit the GitHub repository and submit an issue.
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p>GabeCubeAura is an independent community project and is not affiliated with Valve Corporation or Steam.</p>
+            <p>© 2024 GabeCubeAura. All rights reserved.</p>
+        </div>
     </div>
-    <p class="instruction hand" id="instruction"></p>
-    <div class="cut-slider" id="cut-slider" role="slider" tabindex="0"
-         aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-valuetext="0% of the tape cut">
-      <span class="hand" id="slider-text">Hold → to cut the tape</span>
-    </div>
-    <img class="knife-marker" id="knife-marker" src="assets/ui/knife.svg" alt="" hidden>
-  </main>
-
-  <section class="reader" id="reader" tabindex="-1" aria-label="Introduction book" hidden>
-    <div class="reader-book" id="reader-book"></div>
-    <button class="reader-btn reader-close" id="reader-close" type="button" aria-label="Close the book">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5.5 6 C9 9.5 14 14.6 18.4 18.2 M18 5.6 C14.2 9.4 9.6 14.2 6 18.4"/></svg>
-    </button>
-    <button class="reader-btn reader-prev" id="reader-prev" type="button" aria-label="Previous page">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15.5 5 C12 8.5 9.5 10.6 7.6 12.2 C10 14 12.4 16.2 15.2 19.2"/></svg>
-    </button>
-    <button class="reader-btn reader-next" id="reader-next" type="button" aria-label="Next page">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8.5 5 C12 8.5 14.5 10.6 16.4 12.2 C14 14 11.6 16.2 8.8 19.2"/></svg>
-    </button>
-    <p class="reader-indicator hand" id="reader-indicator" role="status">
-      <span class="indicator-visual" id="indicator-visual" aria-hidden="true"></span>
-      <span class="sr-only" id="indicator-spoken"></span>
-    </p>
-    <p class="reader-hint hand" id="reader-hint"></p>
-  </section>
-
-  <div class="flyer" id="flyer" aria-hidden="true" hidden></div>
-  <div class="measure" id="measure" aria-hidden="true"></div>
-
-  <nav class="controls" aria-label="Sound and restart">
-    <button class="control" id="mute" type="button" aria-pressed="false" aria-label="Mute sound">
-      <svg viewBox="0 0 24 24" aria-hidden="true">
-        <path class="speaker" d="M4.2 9.4 L7.6 9.2 L12 5.4 C12.4 9.6 12.4 14.6 12 18.6 L7.6 14.8 L4.2 14.6 Z"/>
-        <path class="waves" d="M15.2 9 C16.4 10.4 16.4 13.6 15.2 15 M17.6 6.6 C20 9.2 20 14.8 17.6 17.4"/>
-        <path class="cross" d="M15.4 9.4 L20.2 14.6 M20.2 9.4 L15.4 14.6"/>
-      </svg>
-    </button>
-    <button class="control" id="restart" type="button" aria-label="Start again with a sealed parcel">
-      <svg viewBox="0 0 24 24" aria-hidden="true">
-        <path d="M18.6 13.2 C18.2 17 15.2 19.6 11.6 19.4 C7.8 19.2 5 16 5.2 12.2 C5.4 8.4 8.6 5.4 12.4 5.6 C14.6 5.7 16.4 6.8 17.6 8.4"/>
-        <path d="M18.2 4.4 L17.8 8.8 L13.6 8.2"/>
-      </svg>
-    </button>
-  </nav>
-
-  <div class="sr-only" id="announcer" aria-live="polite"></div>
-
-  <noscript>
-    <p class="fatal">This little parcel needs JavaScript to open. Please enable it and reload.</p>
-  </noscript>
 </body>
 </html>
