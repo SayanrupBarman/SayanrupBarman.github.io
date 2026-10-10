@@ -49,15 +49,16 @@ export default {
   /**
    * Artwork layers. Keep the proportions noted beside each one (any size is
    * fine as long as the ratio matches; 3× the listed size looks crisp).
-   * SVG, PNG, JPG and WebP all work.
+   * SVG, PNG, JPG and WebP all work. The six box layers are finished
+   * cardboard art; the book cover, endpaper and question mark are stand-ins.
    */
   art: {
-    boxFront: 'assets/placeholders/box-front.svg', // 420 × 220 — front and back walls, outside
-    boxSide: 'assets/placeholders/box-side.svg', // 300 × 220 — left and right walls, outside
-    flapLong: 'assets/placeholders/flap-long.svg', // 420 × 150 — the two long top flaps, outside
-    flapShort: 'assets/placeholders/flap-short.svg', // 300 × 150 — the two short top flaps, outside
-    boxInside: 'assets/placeholders/box-inside.svg', // 420 × 220 — inner walls and flap undersides
-    boxFloor: 'assets/placeholders/box-floor.svg', // 420 × 300 — the floor inside the box
+    boxFront: 'assets/art/box-front.svg', // 420 × 220 — front and back walls, outside
+    boxSide: 'assets/art/box-side.svg', // 300 × 220 — left and right walls, outside
+    flapLong: 'assets/art/flap-long.svg', // 420 × 150 — the two long top flaps, outside
+    flapShort: 'assets/art/flap-short.svg', // 300 × 150 — the two short top flaps, outside
+    boxInside: 'assets/art/box-inside.svg', // 420 × 220 — inner walls and flap undersides
+    boxFloor: 'assets/art/box-floor.svg', // 420 × 300 — the floor inside the box
     bookCover: 'assets/placeholders/book-cover.svg', // 360 × 500 — front cover of the little book
     endpaper: 'assets/placeholders/endpaper.svg', // 360 × 500 — inside of the cover
     questionMark: 'assets/placeholders/question-mark.svg', // ~200 × 280, transparent background

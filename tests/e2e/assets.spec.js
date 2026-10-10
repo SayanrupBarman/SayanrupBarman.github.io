@@ -16,10 +16,10 @@ test('essential artwork, fonts and sounds load cleanly', async ({ page }) => {
   expect(problems).toEqual([]);
 });
 
-test('a missing artwork file falls back to its placeholder', async ({ page }) => {
+test('a missing artwork file falls back to the built-in art', async ({ page }) => {
   await page.route('**/content/site.js', async (route) => {
     const original = await (await route.fetch()).text();
-    const body = original.replace("boxFront: 'assets/placeholders/box-front.svg'", "boxFront: 'assets/art/not-uploaded-yet.png'");
+    const body = original.replace("boxFront: 'assets/art/box-front.svg'", "boxFront: 'assets/art/not-uploaded-yet.png'");
     await route.fulfill({ contentType: 'text/javascript', body });
   });
   const warnings = [];
@@ -27,7 +27,7 @@ test('a missing artwork file falls back to its placeholder', async ({ page }) =>
   await page.goto('/');
   await waitForState(page, 'sealed');
   const front = await page.$eval('.parcel', (el) => el.style.getPropertyValue('--art-box-front'));
-  expect(front).toContain('placeholders/box-front.svg');
+  expect(front).toContain('assets/art/box-front.svg');
   expect(warnings.join('\n')).toContain('assets/art/not-uploaded-yet.png is missing');
 });
 
@@ -42,6 +42,6 @@ test('works from a sub-folder, as on a GitHub Pages project site', async ({ page
   const problems = await openSite(page, '/some-repo/');
   expect(await page.evaluate(() => window.__parcel.state)).toBe('sealed');
   const front = await page.$eval('.parcel', (el) => el.style.getPropertyValue('--art-box-front'));
-  expect(front).toContain('/some-repo/assets/placeholders/box-front.svg');
+  expect(front).toContain('/some-repo/assets/art/box-front.svg');
   expect(problems).toEqual([]);
 });

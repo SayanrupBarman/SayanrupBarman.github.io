@@ -1,7 +1,8 @@
-"""Generate the site's placeholder art, textures, cursors and sounds.
+"""Generate the site's built-in art, placeholders, textures, cursors and sounds.
 
-Everything here is a stand-in. Personal artwork (box faces, cover, photo,
-question mark) is written to assets/placeholders/ and stamped "placeholder".
+The cardboard box faces are the site's own box art and go to assets/art/.
+The personal pieces (book cover, endpaper, photo, question mark) are stand-ins:
+they go to assets/placeholders/ and are stamped "placeholder".
 Neutral UI pieces (cursors, textures, sounds) go to assets/ui, assets/textures
 and assets/sounds and can be kept or replaced.
 
@@ -20,6 +21,7 @@ import numpy as np
 from PIL import Image, ImageDraw, ImageFilter
 
 ROOT = Path(__file__).resolve().parent.parent
+ART = ROOT / "assets" / "art"
 PLACEHOLDERS = ROOT / "assets" / "placeholders"
 UI = ROOT / "assets" / "ui"
 TEXTURES = ROOT / "assets" / "textures"
@@ -33,6 +35,12 @@ CARD_IN = "#d8c29b"
 CREAM = "#f5ecd7"
 
 rng = random.Random(7)
+
+
+def reseed(group: str) -> None:
+    """Give each group of artwork its own repeatable random stream,
+    so redrawing one group never reshuffles the others."""
+    rng.seed(f"parcel:{group}")
 
 
 # ---------------------------------------------------------------- rough SVG --
@@ -160,19 +168,36 @@ def blotches(w, h, n, color, opacity_range=(0.04, 0.1)) -> str:
 
 # ---------------------------------------------------------- cardboard faces --
 
-def cardboard(w, h, base, edge_dark, extra="", label="placeholder", label_pos=None) -> str:
-    lx, ly = label_pos or (w - 64, h - 8)
+def soft_patches(w: float, h: float, n: int, color: str, opacity_range: tuple[float, float], name: str) -> str:
+    """A few large patches with feathered edges: the uneven tone of real board, not stains."""
+    patches = []
+    for _ in range(n):
+        cx, cy = rng.uniform(0, w), rng.uniform(0, h)
+        rx, ry = rng.uniform(0.2, 0.4) * w, rng.uniform(0.3, 0.55) * h
+        patches.append(
+            f'<ellipse cx="{cx:.1f}" cy="{cy:.1f}" rx="{rx:.1f}" ry="{ry:.1f}" '
+            f'transform="rotate({rng.uniform(-20, 20):.1f} {cx:.1f} {cy:.1f})" '
+            f'fill="url(#{name})" opacity="{rng.uniform(*opacity_range):.2f}"/>'
+        )
+    gradient = (
+        f'<defs><radialGradient id="{name}"><stop offset="0" stop-color="{color}"/>'
+        f'<stop offset="1" stop-color="{color}" stop-opacity="0"/></radialGradient></defs>'
+    )
+    return gradient + "".join(patches)
+
+
+def cardboard(w: float, h: float, base: str, edge_dark: str, extra: str = "") -> str:
+    """One flat face of the box: board colour, a soft sheen, gentle tonal variation and a pencil edge."""
     body = (
         f'<rect width="{w}" height="{h}" fill="{base}"/>'
         f'<defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1">'
         f'<stop offset="0" stop-color="#fff" stop-opacity=".10"/><stop offset=".55" stop-color="#fff" stop-opacity="0"/>'
         f'<stop offset="1" stop-color="#000" stop-opacity=".10"/></linearGradient></defs>'
         f'<rect width="{w}" height="{h}" fill="url(#g)"/>'
-        + blotches(w, h, 18, "#fff", (0.03, 0.08))
-        + blotches(w, h, 14, "#5b3a1c", (0.03, 0.07))
+        + soft_patches(w, h, 3, "#fff", (0.10, 0.16), "tone-light")
+        + soft_patches(w, h, 2, "#5b3a1c", (0.07, 0.11), "tone-dark")
         + stroke(rough_rect(3, 3, w - 6, h - 6, 1.2), edge_dark, 1.6, 0.55)
         + extra
-        + stamp_text(lx, ly, label)
     )
     return svg(w, h, body)
 
@@ -189,29 +214,6 @@ def fragile_glass(x, y) -> str:
     return stroke(cup + " " + stem, STAMP_RED, 2, 0.75) + stroke(crack, STAMP_RED, 1.2, 0.75)
 
 
-def postage_stamp(x, y, w=54, h=64) -> str:
-    perf = []
-    for i in range(int(w / 6) + 1):
-        perf.append(f'<circle cx="{x + i * 6:.1f}" cy="{y}" r="1.8" fill="{CARD_OUT}"/>')
-        perf.append(f'<circle cx="{x + i * 6:.1f}" cy="{y + h}" r="1.8" fill="{CARD_OUT}"/>')
-    for i in range(int(h / 6) + 1):
-        perf.append(f'<circle cx="{x}" cy="{y + i * 6:.1f}" r="1.8" fill="{CARD_OUT}"/>')
-        perf.append(f'<circle cx="{x + w}" cy="{y + i * 6:.1f}" r="1.8" fill="{CARD_OUT}"/>')
-    sun = rough_ellipse(x + w * 0.5, y + h * 0.42, 10, 10, 1)
-    rays = " ".join(rough_line(x + w / 2 + math.cos(a) * 14, y + h * 0.42 + math.sin(a) * 14,
-                               x + w / 2 + math.cos(a) * 20, y + h * 0.42 + math.sin(a) * 20, 0.3)
-                    for a in [i * math.pi / 4 for i in range(8)])
-    hills = smooth_open([(x + 4, y + h - 12), (x + 18, y + h - 22), (x + 30, y + h - 15), (x + 44, y + h - 25), (x + w - 4, y + h - 16)])
-    return (
-        f'<g transform="rotate(6 {x + w / 2} {y + h / 2})">'
-        f'<rect x="{x}" y="{y}" width="{w}" height="{h}" fill="{CREAM}"/>' + "".join(perf)
-        + stroke(rough_rect(x + 5, y + 5, w - 10, h - 10, 0.6), STAMP_RED, 1.1, 0.7)
-        + stroke(sun + " " + rays, "#d08a2a", 1.5, 0.85)
-        + stroke(hills, "#5d7f5a", 1.6, 0.85)
-        + "</g>"
-    )
-
-
 def address_label(x, y, w=150, h=78, rot=-3) -> str:
     return (
         f'<g transform="rotate({rot} {x + w / 2} {y + h / 2})">'
@@ -223,13 +225,13 @@ def address_label(x, y, w=150, h=78, rot=-3) -> str:
 
 
 def make_box_faces():
+    reseed("box")
     front_extra = (
         address_label(150, 70, 150, 80)
-        + postage_stamp(330, 34)
         + arrow_up(42, 40) + arrow_up(66, 40)
         + fragile_glass(54, 120)
     )
-    (PLACEHOLDERS / "box-front.svg").write_text(cardboard(420, 220, CARD_OUT, CARD_OUT_DARK, front_extra))
+    (ART / "box-front.svg").write_text(cardboard(420, 220, CARD_OUT, CARD_OUT_DARK, front_extra))
 
     side_extra = (
         stroke(rough_ellipse(80, 95, 34, 34, 1.2), STAMP_RED, 2, 0.6)
@@ -237,23 +239,24 @@ def make_box_faces():
         + stroke(scribble_lines(160, 70, 110, 4, 12), INK, 1.4, 0.55)
         + "".join(stroke(rough_line(160 + i * 5, 140, 160 + i * 5, 168, 0.2), INK, 1.2 if i % 3 else 2.4, 0.6) for i in range(18))
     )
-    (PLACEHOLDERS / "box-side.svg").write_text(cardboard(300, 220, "#c49763", CARD_OUT_DARK, side_extra))
+    (ART / "box-side.svg").write_text(cardboard(300, 220, "#c49763", CARD_OUT_DARK, side_extra))
 
     flap_scuffs = stroke(smooth_open([(40, 40), (70, 46), (95, 41)]), "#7a5634", 1.2, 0.35)
-    (PLACEHOLDERS / "flap-long.svg").write_text(cardboard(420, 150, "#cda06a", CARD_OUT_DARK, flap_scuffs, label_pos=(330, 140)))
-    (PLACEHOLDERS / "flap-short.svg").write_text(cardboard(300, 150, "#c69a65", CARD_OUT_DARK, "", label_pos=(220, 140)))
+    (ART / "flap-long.svg").write_text(cardboard(420, 150, "#cda06a", CARD_OUT_DARK, flap_scuffs))
+    (ART / "flap-short.svg").write_text(cardboard(300, 150, "#c69a65", CARD_OUT_DARK))
 
     corrugation = "".join(
         f'<line x1="{x}" y1="0" x2="{x}" y2="220" stroke="#8d6a43" stroke-width="1" opacity=".09"/>' for x in range(4, 420, 7)
     )
-    (PLACEHOLDERS / "box-inside.svg").write_text(cardboard(420, 220, CARD_IN, "#a88b62", corrugation))
+    (ART / "box-inside.svg").write_text(cardboard(420, 220, CARD_IN, "#a88b62", corrugation))
     seam = stroke(rough_line(0, 150, 420, 150, 0.8), "#7d6043", 1.4, 0.35)
-    (PLACEHOLDERS / "box-floor.svg").write_text(cardboard(420, 300, "#d4bd95", "#a88b62", seam))
+    (ART / "box-floor.svg").write_text(cardboard(420, 300, "#d4bd95", "#a88b62", seam))
 
 
 # ------------------------------------------------------------ book & photo --
 
 def make_book_art():
+    reseed("book")
     w, h = 360, 500
     sprig = smooth_open([(180, 430), (182, 392), (178, 352)])
     leaves = "".join(
@@ -304,6 +307,7 @@ def make_book_art():
 
 
 def make_question_mark():
+    reseed("question-mark")
     w, h = 200, 280
     hook = [(52, 92), (60, 54), (100, 34), (142, 50), (152, 88), (128, 122), (104, 146), (100, 186)]
     glow = f'<path d="{smooth_open(hook)}" fill="none" stroke="#ffd98a" stroke-width="34" stroke-linecap="round" opacity=".18"/>'
@@ -387,13 +391,12 @@ def make_textures():
                 d.line([(x + ox, y + oy), (x + ox + math.cos(a) * length, y + oy + math.sin(a) * length)], fill=colour, width=1)
     img.save(TEXTURES / "paper.png", optimize=True)
 
+    # Fine fibre specks only: anything blob-sized reads as a stain once the
+    # camera magnifies the board (the open flaps in the overhead view).
     grain = np.zeros((size, size, 4), dtype=np.uint8)
     speck = np.random.default_rng(5).random((size, size))
-    soft = tileable_noise(size, 3, 6)
-    dark = (speck > 0.985) | (soft > 2.1)
-    light = (speck < 0.012) | (soft < -2.2)
-    grain[dark] = (70, 45, 20, 60)
-    grain[light] = (255, 245, 225, 55)
+    grain[speck > 0.985] = (70, 45, 20, 60)
+    grain[speck < 0.012] = (255, 245, 225, 55)
     Image.fromarray(grain, "RGBA").filter(ImageFilter.GaussianBlur(0.35)).save(TEXTURES / "grain.png", optimize=True)
 
 
@@ -491,7 +494,7 @@ def make_sounds():
 
 
 def main():
-    for folder in (PLACEHOLDERS, UI, TEXTURES, SOUNDS):
+    for folder in (ART, PLACEHOLDERS, UI, TEXTURES, SOUNDS):
         folder.mkdir(parents=True, exist_ok=True)
     make_box_faces()
     make_book_art()
@@ -503,7 +506,7 @@ def main():
     raster_cursor("hand", UI / "hand.png")
     make_textures()
     make_sounds()
-    print("placeholders written to", PLACEHOLDERS.relative_to(ROOT))
+    print("box art written to", ART.relative_to(ROOT), "and placeholders to", PLACEHOLDERS.relative_to(ROOT))
 
 
 if __name__ == "__main__":

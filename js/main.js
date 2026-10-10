@@ -17,14 +17,14 @@ import { createFlyer } from './book/flyer.js';
 import { createControls } from './ui/controls.js';
 import { createFlow } from './flow.js';
 
-/** Built-in stand-ins used whenever a configured file cannot be loaded. */
-const PLACEHOLDER = {
-  boxFront: 'assets/placeholders/box-front.svg',
-  boxSide: 'assets/placeholders/box-side.svg',
-  flapLong: 'assets/placeholders/flap-long.svg',
-  flapShort: 'assets/placeholders/flap-short.svg',
-  boxInside: 'assets/placeholders/box-inside.svg',
-  boxFloor: 'assets/placeholders/box-floor.svg',
+/** Built-in art used whenever a configured file cannot be loaded. */
+const FALLBACK = {
+  boxFront: 'assets/art/box-front.svg',
+  boxSide: 'assets/art/box-side.svg',
+  flapLong: 'assets/art/flap-long.svg',
+  flapShort: 'assets/art/flap-short.svg',
+  boxInside: 'assets/art/box-inside.svg',
+  boxFloor: 'assets/art/box-floor.svg',
   bookCover: 'assets/placeholders/book-cover.svg',
   endpaper: 'assets/placeholders/endpaper.svg',
   questionMark: 'assets/placeholders/question-mark.svg',
@@ -81,7 +81,7 @@ function createAnnouncer(node) {
 }
 
 function reportPlaceholders(config, resolved, bookView) {
-  const pending = Object.keys(PLACEHOLDER).filter((key) => String(resolved[key] ?? '').includes('/placeholders/'));
+  const pending = Object.keys(FALLBACK).filter((key) => String(resolved[key] ?? '').includes('/placeholders/'));
   if (!config.photo.alt || config.photo.alt.startsWith('[')) pending.push('photo.alt');
   if (config.text.ownerName.startsWith('[')) pending.push('text.ownerName');
   if (bookView.hasPlaceholders()) pending.push('content/book.md');
@@ -92,10 +92,10 @@ function reportPlaceholders(config, resolved, bookView) {
 
 function imagePlan(config) {
   const art = Object.entries(config.art)
-    .filter(([key]) => PLACEHOLDER[key])
-    .map(([key, src]) => ({ key, src: src || PLACEHOLDER[key], fallback: PLACEHOLDER[key] }));
+    .filter(([key]) => FALLBACK[key])
+    .map(([key, src]) => ({ key, src: src || FALLBACK[key], fallback: FALLBACK[key] }));
   const extras = [
-    { key: 'photo', src: config.photo.src, fallback: PLACEHOLDER.photo },
+    { key: 'photo', src: config.photo.src, fallback: FALLBACK.photo },
     { key: 'paper', src: config.textures.paper },
     { key: 'grain', src: config.textures.grain },
   ];

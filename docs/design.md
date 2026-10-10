@@ -8,7 +8,8 @@ introduction book.
 
 - **Owner supplies:** artwork / artwork layers, a portrait photo, handwriting
   elements, and the introduction text. Nothing biographical is invented; every
-  missing asset falls back to a clearly labelled placeholder.
+  missing asset falls back to a clearly labelled placeholder. (The owner later
+  kept the generated cardboard box as the finished box art, in `assets/art/`.)
 - **Mood:** warm, playful, curious; paper textures, imperfect edges, soft
   shadows. No pixel art.
 - **Hosting:** static files only, relative paths (works at `user.github.io/`
