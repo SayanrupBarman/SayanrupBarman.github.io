@@ -1,6 +1,9 @@
 import { defineConfig, devices } from '@playwright/test';
 
 // Uses the locally installed Google Chrome (no browser download needed).
+// BASE_URL=https://you.github.io/ runs the same checks against the live site.
+const LIVE = process.env.BASE_URL;
+
 export default defineConfig({
   testDir: 'tests/e2e',
   timeout: 60_000,
@@ -8,11 +11,11 @@ export default defineConfig({
   workers: 3,
   reporter: [['list']],
   use: {
-    baseURL: 'http://127.0.0.1:4173/',
+    baseURL: LIVE ?? 'http://127.0.0.1:4173/',
     channel: 'chrome',
     trace: 'retain-on-failure',
   },
-  webServer: {
+  webServer: LIVE ? undefined : {
     command: 'node tools/serve.mjs',
     url: 'http://127.0.0.1:4173/',
     reuseExistingServer: true,
