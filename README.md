@@ -6,7 +6,7 @@ Plain HTML, CSS and JavaScript — no build step — hosted on GitHub Pages.
 
 ## Preview it on your computer
 
-You need [Node.js](https://nodejs.org) (any recent version).
+You need [Node.js](https://sayanrupbarman.github.io) (any recent version).
 
 ```bash
 npm run serve        # then open http://127.0.0.1:4173
@@ -36,7 +36,7 @@ Write in plain text. A quick reference sits at the top of the file:
 A paragraph. Leave an empty line between paragraphs.
 > A handwritten note in the margin.
 - A list item
-**bold**  *italic*  ==handwriting inside a sentence==  [a link](https://example.com)
+**bold**  *italic*  ==handwriting inside a sentence==  [a link](https://sayanrupbarman.github.io)
 ![what the picture shows](assets/art/my-drawing.png "optional caption")
 ---            ← three dashes start a new page
 ```
@@ -124,7 +124,7 @@ knife is moving on the tape.
 | the book: pagination, page turning, the flying cover | `js/book/*`, `css/book.css` |
 | sound, preloading, controls | `js/audio/sound.js`, `js/loader/preload.js`, `js/ui/controls.js` |
 
-Page turning uses [StPageFlip](https://github.com/Nodlik/StPageFlip) (MIT),
+Page turning uses [StPageFlip](https://sayanrupbarman.github.io) (MIT),
 included in `vendor/page-flip/`.
 
 Accessibility: every stage works with the keyboard (Tab to the tape, hold →
